@@ -3,22 +3,23 @@ bordes = [
     { x1: 1270, y1: 10, x2: 1270, y2: 710 },
     { x1: 1270, y1: 710, x2: 10, y2: 710 },
     { x1: 10, y1: 710, x2: 10, y2: 10 },
-]
+];
 
 function setup() {
     createCanvas(1280, 720);
     //Bordes Random
-    for (let i =0; i < 5; i++){
+    for (let i = 0; i < 5; i++) {
         let coord1 = coordRandom();
         let coord2 = coordRandom();
-        bordes.push({ x1:coord1.x, y1:coord1.y, x2:coord2.x, y2:coord2.y});
+        bordes.push({ x1: coord1.x, y1: coord1.y, x2: coord2.x, y2: coord2.y });
     }
 }
 
 function draw() {
+
     background(0);
 
-    for (l of bordes) {
+    for (let l of bordes) {
         stroke(255);
         line(l.x1, l.y1, l.x2, l.y2);
     }
@@ -28,13 +29,13 @@ function draw() {
     stroke(255);
 
     let grados = 0;
-    for (let i =0; i < 360;i++) {
+    for (let i = 0; i < 360; i++) {
         let closest = null;
         let record = Infinity;
-        let posicion = createVector(mouseX,mouseY);
+        let posicion = createVector(mouseX, mouseY);
         let direccion = p5.Vector.fromAngle(radians(grados));
         for (let linea of bordes) {
-            const pt = calcularInterseccion(linea,posicion,direccion);
+            const pt = calcularInterseccion(linea, posicion, direccion);
             if (pt) {
                 const d = p5.Vector.dist(posicion, pt);
                 if (d < record) {
@@ -47,7 +48,7 @@ function draw() {
             stroke(255, 100);
             line(posicion.x, posicion.y, closest.x, closest.y);
         }
-        grados+=1;
+        grados += 1;
     }
 
 }
