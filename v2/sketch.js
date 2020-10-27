@@ -1,3 +1,5 @@
+var c;
+var canvas;
 bordes = [
     { x1: 10, y1: 10, x2: 1270, y2: 10 },
     { x1: 1270, y1: 10, x2: 1270, y2: 710 },
@@ -6,27 +8,33 @@ bordes = [
 ];
 
 function setup() {
-    createCanvas(1280, 720);
+    c = document.getElementById("canvas");
+    canvas = c.getContext("2d");
+
     //Bordes Random
     for (let i = 0; i < 5; i++) {
         let coord1 = coordRandom();
         let coord2 = coordRandom();
         bordes.push({ x1: coord1.x, y1: coord1.y, x2: coord2.x, y2: coord2.y });
     }
+    draw();
 }
 
 function draw() {
-
-    background(0);
+    //Background
+    setColor(0, 0, 0); //negro
+    drawRect(0, 0, 1280, 720);
 
     for (let l of bordes) {
-        stroke(255);
-        line(l.x1, l.y1, l.x2, l.y2);
+        setColor(255, 255, 255); //blanco
+        drawLine(l.x1, l.y1, l.x2, l.y2);
     }
 
-    circle(mouseX, mouseY, 25);
+    //Circulo
+    setColor(255, 255, 255);
+    drawCircle(640, 360, 10, 0, 2);
 
-    stroke(255);
+
 
     let grados = 0;
     for (let i = 0; i < 360; i++) {
@@ -50,9 +58,30 @@ function draw() {
         }
         grados += 1;
     }
-
 }
 
+function setColor(r, g, b) {
+    canvas.fillStyle = "rgb(" + r + ", " + g + "," + b + ")";
+    canvas.strokeStyle = "rgb(" + r + ", " + g + "," + b + ")";
+}
+
+
+function drawRect(x1, y1, x2, y2) {
+    canvas.fillRect(x1, y1, x2, y2);
+}
+
+function drawLine(x1, y1, x2, y2) {
+    canvas.beginPath();
+    canvas.moveTo(x1, y1);
+    canvas.lineTo(x2, y2);
+    canvas.stroke();
+}
+
+function drawCircle(x, y, r, angle1, angle2) {
+    canvas.beginPath();
+    canvas.arc(x, y, r, angle1, angle2 * Math.PI);
+    canvas.fill();
+}
 
 function calcularInterseccion(linea, posicion, direccion) {
     const x1 = linea.x1;
