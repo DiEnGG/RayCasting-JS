@@ -1,6 +1,9 @@
 var c;
 var canvas;
-bordes = [
+var mouseX;
+var mouseY;
+
+var bordes = [
     { x1: 10, y1: 10, x2: 1270, y2: 10 },
     { x1: 1270, y1: 10, x2: 1270, y2: 710 },
     { x1: 1270, y1: 710, x2: 10, y2: 710 },
@@ -18,6 +21,11 @@ function setup() {
         bordes.push({ x1: coord1.x, y1: coord1.y, x2: coord2.x, y2: coord2.y });
     }
     draw();
+    document.addEventListener("mousemove", (event) => {
+        mouseX = event.clientX;
+        mouseY = event.clientY;
+        draw();
+    });
 }
 
 function draw() {
@@ -32,20 +40,18 @@ function draw() {
 
     //Circulo
     setColor(255, 255, 255);
-    drawCircle(640, 360, 10, 0, 2);
-
-
+    drawCircle(mouseX - 7, mouseY - 7, 10, 0, 2);
 
     let grados = 0;
     for (let i = 0; i < 360; i++) {
         let closest = null;
         let record = Infinity;
-        let posicion = createVector(mouseX, mouseY);
-        let direccion = p5.Vector.fromAngle(radians(grados));
+        let posicion = { x: mouseX, y: mouseY };
+        let direccion = vectorFromAngle(angleToRadians(grados));
         for (let linea of bordes) {
             const pt = calcularInterseccion(linea, posicion, direccion);
             if (pt) {
-                const d = p5.Vector.dist(posicion, pt);
+                const d = calcularDistancia(posicion, pt);
                 if (d < record) {
                     record = d;
                     closest = pt;
@@ -53,8 +59,8 @@ function draw() {
             }
         }
         if (closest) {
-            stroke(255, 100);
-            line(posicion.x, posicion.y, closest.x, closest.y);
+            setColor(255, 255, 255);
+            drawLine(posicion.x, posicion.y, closest.x, closest.y);
         }
         grados += 1;
     }
@@ -64,7 +70,6 @@ function setColor(r, g, b) {
     canvas.fillStyle = "rgb(" + r + ", " + g + "," + b + ")";
     canvas.strokeStyle = "rgb(" + r + ", " + g + "," + b + ")";
 }
-
 
 function drawRect(x1, y1, x2, y2) {
     canvas.fillRect(x1, y1, x2, y2);
@@ -81,6 +86,32 @@ function drawCircle(x, y, r, angle1, angle2) {
     canvas.beginPath();
     canvas.arc(x, y, r, angle1, angle2 * Math.PI);
     canvas.fill();
+}
+
+function calcularDistancia(firstPoint, secondPoint) {
+    let d;
+    d = Math.sqrt(
+        Math.pow(firstPoint.x - secondPoint.x, 2) +
+        Math.pow(firstPoint.y - secondPoint.y, 2)
+    );
+    return d;
+}
+
+function angleToRadians(angle) {
+    let radians = (angle * Math.PI) / 180;
+    return radians;
+}
+
+function vectorFromAngle(radians) {
+    let vector = {
+        x: Math.cos(radians),
+        y: Math.sin(radians),
+    };
+    return vector;
+}
+
+function createVector() {
+    return { x: null, y: null };
 }
 
 function calcularInterseccion(linea, posicion, direccion) {
