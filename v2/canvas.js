@@ -7,9 +7,6 @@ function createCanvas(width, heigh) {
     element.id = "canvas";
     element.width = width;
     element.height = heigh;
-    element.style.zIndex = 8;
-    element.style.position = "absolute";
-    element.style.border = "1px solid";
 
     document.getElementsByTagName("body")[0].appendChild(element);
 
