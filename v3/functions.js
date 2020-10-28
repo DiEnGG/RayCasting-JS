@@ -53,7 +53,7 @@ function calcIntersection(linea, posicion, direccion) {
 }
 
 function coordRandom() {
-    let x = Math.round(Math.random() * (1270 - 10) + 10);
-    let y = Math.round(Math.random() * (710 - 10) + 10);
+    let x = Math.round(Math.random() * (630 - 10) + 10);
+    let y = Math.round(Math.random() * (350 - 10) + 10);
     return { x, y };
 }

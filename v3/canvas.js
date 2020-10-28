@@ -4,6 +4,8 @@ var canvas;
 function createCanvas(width, heigh) {
     var element = document.createElement('canvas');
 
+    var viewWidth = width;
+    var viewHeight = heigh;
     element.id = "canvas";
     element.width = width;
     element.height = heigh;
