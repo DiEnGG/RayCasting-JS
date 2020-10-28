@@ -1,5 +1,3 @@
-var c;
-var canvas;
 var mouseX;
 var mouseY;
 
@@ -11,10 +9,9 @@ var bordes = [
 ];
 
 function setup() {
-    c = document.getElementById("canvas");
-    canvas = c.getContext("2d");
+    createCanvas(1280, 720);
 
-    //Bordes Random
+    //Random Walls
     for (let i = 0; i < 5; i++) {
         let coord1 = coordRandom();
         let coord2 = coordRandom();
@@ -29,19 +26,22 @@ function setup() {
 }
 
 function draw() {
-    //Background
-    setColor(0, 0, 0); //negro
+
+    //Background (black - width:1280, height:720)
+    setColor(0, 0, 0);
     drawRect(0, 0, 1280, 720);
 
+    //Container and Walls lines
     for (let l of bordes) {
-        setColor(255, 255, 255); //blanco
+        setColor(255, 255, 255); //white
         drawLine(l.x1, l.y1, l.x2, l.y2);
     }
 
-    //Circulo
+    //Mouse's Circle
     setColor(255, 255, 255);
     drawCircle(mouseX - 7, mouseY - 7, 10, 0, 2);
 
+    //Ray's lines
     let grados = 0;
     for (let i = 0; i < 360; i++) {
         let closest = null;
@@ -49,9 +49,9 @@ function draw() {
         let posicion = { x: mouseX, y: mouseY };
         let direccion = vectorFromAngle(angleToRadians(grados));
         for (let linea of bordes) {
-            const pt = calcularInterseccion(linea, posicion, direccion);
+            const pt = calcIntersection(linea, posicion, direccion);
             if (pt) {
-                const d = calcularDistancia(posicion, pt);
+                const d = calcDist(posicion, pt);
                 if (d < record) {
                     record = d;
                     closest = pt;
@@ -64,86 +64,4 @@ function draw() {
         }
         grados += 1;
     }
-}
-
-function setColor(r, g, b) {
-    canvas.fillStyle = "rgb(" + r + ", " + g + "," + b + ")";
-    canvas.strokeStyle = "rgb(" + r + ", " + g + "," + b + ")";
-}
-
-function drawRect(x1, y1, x2, y2) {
-    canvas.fillRect(x1, y1, x2, y2);
-}
-
-function drawLine(x1, y1, x2, y2) {
-    canvas.beginPath();
-    canvas.moveTo(x1, y1);
-    canvas.lineTo(x2, y2);
-    canvas.stroke();
-}
-
-function drawCircle(x, y, r, angle1, angle2) {
-    canvas.beginPath();
-    canvas.arc(x, y, r, angle1, angle2 * Math.PI);
-    canvas.fill();
-}
-
-function calcularDistancia(firstPoint, secondPoint) {
-    let d;
-    d = Math.sqrt(
-        Math.pow(firstPoint.x - secondPoint.x, 2) +
-        Math.pow(firstPoint.y - secondPoint.y, 2)
-    );
-    return d;
-}
-
-function angleToRadians(angle) {
-    let radians = (angle * Math.PI) / 180;
-    return radians;
-}
-
-function vectorFromAngle(radians) {
-    let vector = {
-        x: Math.cos(radians),
-        y: Math.sin(radians),
-    };
-    return vector;
-}
-
-function createVector() {
-    return { x: null, y: null };
-}
-
-function calcularInterseccion(linea, posicion, direccion) {
-    const x1 = linea.x1;
-    const y1 = linea.y1;
-    const x2 = linea.x2;
-    const y2 = linea.y2;
-
-    const x3 = posicion.x;
-    const y3 = posicion.y;
-    const x4 = posicion.x + direccion.x;
-    const y4 = posicion.y + direccion.y;
-
-    const den = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
-    if (den == 0) {
-        return;
-    }
-
-    const t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / den;
-    const u = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / den;
-    if (t > 0 && t < 1 && u > 0) {
-        const pt = createVector();
-        pt.x = x1 + t * (x2 - x1);
-        pt.y = y1 + t * (y2 - y1);
-        return pt;
-    } else {
-        return;
-    }
-}
-
-function coordRandom() {
-    let x = Math.round(Math.random() * (1270 - 10) + 10);
-    let y = Math.round(Math.random() * (710 - 10) + 10);
-    return { x, y };
 }
