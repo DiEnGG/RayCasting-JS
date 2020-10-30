@@ -57,3 +57,10 @@ function coordRandom() {
     let y = Math.round(Math.random() * (350 - 10) + 10);
     return { x, y };
 }
+
+function colorRandomRGB() {
+    let r = Math.round(Math.random() * 255);
+    let g = Math.round(Math.random() * 255);
+    let b = Math.round(Math.random() * 255);
+    return { r, g, b };
+}
