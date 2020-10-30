@@ -44,7 +44,7 @@ function setup() {
         }
     });
     document.addEventListener("click", (event) => {
-        imprimirBarras();
+        //Nothing
     });
 
     window.setInterval(function() {
@@ -72,7 +72,7 @@ function draw() {
     let degrees = grados;
     let difGrados = 90 / 360;
     for (let i = 0; i < 360; i++) {
-        let barra = 1.8 * i;
+        let barra = 2 * i;
         let closest = null;
         let wallClosest;
         let record = Infinity;
@@ -98,15 +98,15 @@ function draw() {
             //Canvas 3D View
             //canvas3d.beginPath();
             canvas3d.fillStyle = "rgba(0,51,102)";
-            canvas3d.fillRect(barra, 0, 1.8, 180);
+            canvas3d.fillRect(barra, 0, 2, 180);
 
             //canvas3d.beginPath();
             canvas3d.fillStyle = "rgba(102,51,0)";
-            canvas3d.fillRect(barra, 180, 1.8, 360);
+            canvas3d.fillRect(barra, 180, 2, 360);
 
             canvas3d.beginPath();
             canvas3d.fillStyle = "rgba(" + wallClosest.colorR + "," + wallClosest.colorG + "," + wallClosest.colorB + ")";
-            canvas3d.fillRect(barra, coordBloque.y1, barra + 1.8, coordBloque.y2);
+            canvas3d.fillRect(barra, coordBloque.y1, barra + 2, coordBloque.y2);
 
         }
         if (closest) {
@@ -115,8 +115,4 @@ function draw() {
         }
         degrees += difGrados;
     }
-}
-
-function imprimirBarras() {
-    console.log(barras);
 }
