@@ -1,6 +1,3 @@
-var playerX = 320;
-var playerY = 180;
-var initialAngle = 0;
 var mouseX;
 var mouseY;
 
@@ -30,34 +27,20 @@ function setup() {
     canvasWalls.setColor(0, 0, 0);
     canvasWalls.drawRect(0, 0, canvasWidth, canvasHeight);
 
-    document.addEventListener("keydown", (event) => {
-        if (event.code === "ArrowLeft") {
-            initialAngle -= 1.5;
-        } else if (event.code === "ArrowRight") {
-            initialAngle += 1.5;
-        } else if (event.code === "ArrowUp") {
-            let move = vectorFromAngle(angleToRadians(initialAngle + 45));
-            playerX += move.x * 2;
-            playerY += move.y * 2;
-        } else if (event.code === "ArrowDown") {
-            let move = vectorFromAngle(angleToRadians(initialAngle + 45));
-            playerX -= move.x * 2;
-            playerY -= move.y * 2;
-        }
-    });
 
-    document.addEventListener("click", (event) => {
-        mouseX = event.clientX;
-        mouseY = event.clientY;
+    document.getElementById("canvasWalls").addEventListener("click", (event) => {
+        mouseX = event.offsetX;
+        mouseY = event.offsetY;
 
         let cRGB = colorRandomRGB();
-        canvasWalls.setColor(cRGB.r, cRGB.g, cRGB.b);
-        canvasWalls.drawRect((mouseX - 10), (mouseY - 10), 20, 20);
-
         walls.push({ x1: mouseX - 10, y1: mouseY - 10, x2: mouseX + 10, y2: mouseY - 10, colorR: cRGB.r, colorG: cRGB.g, colorB: cRGB.b });
         walls.push({ x1: mouseX + 10, y1: mouseY - 10, x2: mouseX + 10, y2: mouseY + 10, colorR: cRGB.r, colorG: cRGB.g, colorB: cRGB.b });
         walls.push({ x1: mouseX + 10, y1: mouseY + 10, x2: mouseX - 10, y2: mouseY + 10, colorR: cRGB.r, colorG: cRGB.g, colorB: cRGB.b });
         walls.push({ x1: mouseX - 10, y1: mouseY + 10, x2: mouseX - 10, y2: mouseY - 10, colorR: cRGB.r, colorG: cRGB.g, colorB: cRGB.b });
+    });
+
+    document.addEventListener("keydown", (event) => {
+        walk(event.code, walls);
     });
 
     window.setInterval(function() {
@@ -70,16 +53,22 @@ function draw() {
     //Background (black - width:1280, height:720)
     canvasCenitalView.setColor(0, 0, 0);
     canvasCenitalView.drawRect(0, 0, canvasWidth, canvasHeight);
+    canvasWalls.setColor(0, 0, 0);
+    canvasWalls.drawRect(0, 0, canvasWidth, canvasHeight);
 
     //Container and Walls lines
     for (let w of walls) {
         canvasCenitalView.setColor(w.colorR, w.colorG, w.colorB); //white
         canvasCenitalView.drawLine(w.x1, w.y1, w.x2, w.y2);
+        canvasWalls.setColor(w.colorR, w.colorG, w.colorB);
+        canvasWalls.drawLine(w.x1, w.y1, w.x2, w.y2);
     }
 
     //Player's Circle
     canvasCenitalView.setColor(255, 255, 255);
-    canvasCenitalView.drawCircle(playerX, playerY, 10, 0, 2);
+    canvasCenitalView.drawCircle(getPlayerPosition().x, getPlayerPosition().y, 10, 0, 2);
+    canvasWalls.setColor(255, 255, 255);
+    canvasWalls.drawCircle(getPlayerPosition().x, getPlayerPosition().y, 10, 0, 2);
 
     //Ray's lines
     let degrees = initialAngle;
@@ -91,7 +80,7 @@ function draw() {
         let closest = null;
         let closestWall;
         let record = Infinity;
-        let position = { x: playerX, y: playerY };
+        let position = getPlayerPosition();
         let direction = vectorFromAngle(angleToRadians(degrees));
         for (let line of walls) {
             const pt = calcIntersection(line, position, direction);

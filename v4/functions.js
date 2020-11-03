@@ -1,3 +1,7 @@
+var playerX = 320;
+var playerY = 180;
+var initialAngle = 0;
+
 function calcDist(firstPoint, secondPoint) {
     let d;
     d = Math.sqrt(
@@ -36,7 +40,7 @@ function calcIntersection(linea, posicion, direccion) {
     const y4 = posicion.y + direccion.y;
 
     const den = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
-    if (den == 0) {
+    if (den === 0) {
         return;
     }
 
@@ -47,8 +51,6 @@ function calcIntersection(linea, posicion, direccion) {
         pt.x = x1 + t * (x2 - x1);
         pt.y = y1 + t * (y2 - y1);
         return pt;
-    } else {
-        return;
     }
 }
 
@@ -63,4 +65,56 @@ function colorRandomRGB() {
     let g = Math.round(Math.random() * 255);
     let b = Math.round(Math.random() * 255);
     return { r, g, b };
+}
+
+
+function walk(keyPressed, walls) {
+
+    let closestDistanceForward = Infinity;
+    let closestDistanceBackward = Infinity;
+
+    if (keyPressed === "ArrowLeft") {
+        initialAngle -= 1.5;
+
+    } else if (keyPressed === "ArrowRight") {
+        initialAngle += 1.5;
+
+    } else if (keyPressed === "ArrowUp") {
+        for (let line of walls) {
+            let forward = vectorFromAngle(angleToRadians(initialAngle + 45));
+            let pt = calcIntersection(line, getPlayerPosition(), forward);
+            if (pt) {
+                let distForward = calcDist(getPlayerPosition(), pt);
+                if (distForward < closestDistanceForward) {
+                    closestDistanceForward = distForward;
+                }
+            }
+        }
+        if (closestDistanceForward > 10) {
+            let move = vectorFromAngle(angleToRadians(initialAngle + 45));
+            playerX += move.x * 2;
+            playerY += move.y * 2;
+        }
+
+    } else if (keyPressed === "ArrowDown") {
+        for (let line of walls) {
+            let backward = vectorFromAngle(angleToRadians(initialAngle - 135));
+            let pt = calcIntersection(line, getPlayerPosition(), backward);
+            if (pt) {
+                let distBackward = calcDist(getPlayerPosition(), pt);
+                if (distBackward < closestDistanceBackward) {
+                    closestDistanceBackward = distBackward;
+                }
+            }
+        }
+        if (closestDistanceBackward > 10) {
+            let move = vectorFromAngle(angleToRadians(initialAngle + 45));
+            playerX -= move.x * 2;
+            playerY -= move.y * 2;
+        }
+    }
+}
+
+function getPlayerPosition() {
+    return { x: playerX, y: playerY };
 }
