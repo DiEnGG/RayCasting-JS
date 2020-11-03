@@ -1,16 +1,14 @@
 class Canvas {
-    constructor(width, heigh, id) {
-        let element = document.createElement('canvas');
+    constructor(canvasElement, width, height) {
 
-        element.id = id;
-        element.width = width;
-        element.height = heigh;
+        this.width = width;
+        this.height = height;
 
-        document.getElementsByTagName("body")[0].appendChild(element);
-        this.width = element.width;
-        this.hirght = element.height;
-        this.canvasElement = document.getElementById(id);
-        this.canvasContext = this.canvasElement.getContext("2d");
+        this.canvasElement = document.getElementById(canvasElement.id);
+        this.canvasContext = this.canvasElement.getContext('2d');
+        canvasElement.width = width;
+        canvasElement.height = height;
+
     }
 
 

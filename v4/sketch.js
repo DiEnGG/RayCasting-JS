@@ -1,11 +1,14 @@
-var mouseX = 320;
-var mouseY = 180;
+var playerX = 320;
+var playerY = 180;
 var initialAngle = 0;
+var mouseX;
+var mouseY;
 
 var canvas3dView;
 var canvasWidth;
 var canvasHeight;
 var canvasCenitalView;
+var canvasWalls;
 
 
 var walls = [
@@ -18,16 +21,14 @@ var walls = [
 function setup() {
     canvasWidth = 640;
     canvasHeight = 360;
-    canvasCenitalView = new Canvas(canvasWidth, canvasHeight, "viewCenital");
-    canvas3dView = new Canvas(canvasWidth, canvasHeight, "view3d");
 
-    //Random Walls
-    for (let i = 0; i < 5; i++) {
-        let coord1 = coordRandom();
-        let coord2 = coordRandom();
-        let cRGB = colorRandomRGB();
-        walls.push({ x1: coord1.x, y1: coord1.y, x2: coord2.x, y2: coord2.y, colorR: cRGB.r, colorG: cRGB.g, colorB: cRGB.b });
-    }
+    canvasWalls = new Canvas(document.getElementById("canvasWalls"), canvasWidth, canvasHeight);
+    canvasCenitalView = new Canvas(document.getElementById("canvasCenitalView"), canvasWidth, canvasHeight);
+    canvas3dView = new Canvas(document.getElementById("canvas3DView"), canvasWidth, canvasHeight);
+
+
+    canvasWalls.setColor(0, 0, 0);
+    canvasWalls.drawRect(0, 0, canvasWidth, canvasHeight);
 
     document.addEventListener("keydown", (event) => {
         if (event.code === "ArrowLeft") {
@@ -36,16 +37,27 @@ function setup() {
             initialAngle += 1.5;
         } else if (event.code === "ArrowUp") {
             let move = vectorFromAngle(angleToRadians(initialAngle + 45));
-            mouseX += move.x * 2;
-            mouseY += move.y * 2;
+            playerX += move.x * 2;
+            playerY += move.y * 2;
         } else if (event.code === "ArrowDown") {
             let move = vectorFromAngle(angleToRadians(initialAngle + 45));
-            mouseX -= move.x * 2;
-            mouseY -= move.y * 2;
+            playerX -= move.x * 2;
+            playerY -= move.y * 2;
         }
     });
+
     document.addEventListener("click", (event) => {
-        //Nothing
+        mouseX = event.clientX;
+        mouseY = event.clientY;
+
+        let cRGB = colorRandomRGB();
+        canvasWalls.setColor(cRGB.r, cRGB.g, cRGB.b);
+        canvasWalls.drawRect((mouseX - 10), (mouseY - 10), 20, 20);
+
+        walls.push({ x1: mouseX - 10, y1: mouseY - 10, x2: mouseX + 10, y2: mouseY - 10, colorR: cRGB.r, colorG: cRGB.g, colorB: cRGB.b });
+        walls.push({ x1: mouseX + 10, y1: mouseY - 10, x2: mouseX + 10, y2: mouseY + 10, colorR: cRGB.r, colorG: cRGB.g, colorB: cRGB.b });
+        walls.push({ x1: mouseX + 10, y1: mouseY + 10, x2: mouseX - 10, y2: mouseY + 10, colorR: cRGB.r, colorG: cRGB.g, colorB: cRGB.b });
+        walls.push({ x1: mouseX - 10, y1: mouseY + 10, x2: mouseX - 10, y2: mouseY - 10, colorR: cRGB.r, colorG: cRGB.g, colorB: cRGB.b });
     });
 
     window.setInterval(function() {
@@ -67,7 +79,7 @@ function draw() {
 
     //Player's Circle
     canvasCenitalView.setColor(255, 255, 255);
-    canvasCenitalView.drawCircle(mouseX, mouseY, 10, 0, 2);
+    canvasCenitalView.drawCircle(playerX, playerY, 10, 0, 2);
 
     //Ray's lines
     let degrees = initialAngle;
@@ -79,7 +91,7 @@ function draw() {
         let closest = null;
         let closestWall;
         let record = Infinity;
-        let position = { x: mouseX, y: mouseY };
+        let position = { x: playerX, y: playerY };
         let direction = vectorFromAngle(angleToRadians(degrees));
         for (let line of walls) {
             const pt = calcIntersection(line, position, direction);

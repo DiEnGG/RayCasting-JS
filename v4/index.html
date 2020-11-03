@@ -5,17 +5,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RayCasting JS</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <script src="canvas.js"></script>
     <script src="functions.js"></script>
     <script src="sketch.js"></script>
 </head>
 
-<body scroll="no" style="overflow: hidden">
-    <canvas id="view3d" width="640" height="360"></canvas>
-    <script type="text/javascript ">
+<body scroll="no" style="overflow: hidden; background-color: gray;">
+    <h1 style="text-align: center;">RayCasting Render JS - DiEnGG</h1>
+    <br>
+    <script type="text/javascript">
         window.onload = setup;
     </script>
-    <p id="texto"></p>
+    <div class="d-flex justify-content-center">
+        <canvas id="canvasWalls" style="border-radius: 25px; margin: 5px;"></canvas>
+        <canvas id="canvasCenitalView" style="border-radius: 25px; margin: 5px;"></canvas>
+    </div>
+    <div class="d-flex justify-content-center">
+        <canvas id="canvas3DView" style="border-radius: 25px; margin: 5px;"></canvas>
+    </div>
 </body>
 
 </html>
